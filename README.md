@@ -5,4 +5,22 @@ A simple bootloader, kernel, and OS for RISC-V. Built for the purpose of learnin
 
 ## Target
 
-Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of [QEMU](https://www.qemu.org/)'s [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html). Target machine consists of one RV32I core and an attached UART.
+Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of [QEMU](https://www.qemu.org/)'s [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html), with a single RV32I core.
+
+## Building
+
+Requires the [RISC-V GNU Compiler Toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain).
+
+Build using make:
+
+```sh
+  make all
+```
+
+## Running
+
+Run using QEMU:
+
+```sh
+  qemu-system-riscv32 -machine virt -cpu rv32i -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
+```
