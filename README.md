@@ -1,11 +1,12 @@
 
 # RVOS
 
-A simple bootloader, kernel, and OS for RISC-V. Built for the purpose of learning RISC-V assembly and operating system design.
+A simple bootloader, kernel, and OS for RISC-V. Built for the purpose of
+learning RISC-V assembly and operating system design.
 
 ## Target
 
-Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of [QEMU](https://www.qemu.org/)'s [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html), with a single RV32I core.
+Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of QEMU's [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html), with a single RV64I core.
 
 ## Building
 
@@ -22,5 +23,5 @@ Build using make:
 Run using QEMU:
 
 ```sh
-  qemu-system-riscv32 -machine virt -cpu rv32i,sv32=off -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
+  qemu-system-riscv64 -machine virt -cpu rv64i,sv39=off -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
 ```
