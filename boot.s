@@ -47,27 +47,23 @@ _start:
                  also disable DLAB */
   sb t1, 0(t0)
 
-  /* Hello, World! */
-  la a2, hello
-  jal _write_uart
-
 _spin:
   j _spin
 
 /* Write a character to the UART
-   in: a2: Character to write */ 
+   in: a2: character to write */ 
 _write_uart_character:
   li t0, UART_LSR
+  li t1, UART_THR
 
   _write_uart_character_wait_ready:
     /* Wait until the Transmitter is empty */
-    lb t1, 0(t0)
-    andi t2, t1, 0x40
-    beqz t2, _write_uart_character_wait_ready
+    lb t2, 0(t0)
+    andi t3, t2, 0x40
+    beqz t3, _write_uart_character_wait_ready
 
     /* Write the character to THR */
-    li t0, UART_THR
-    sb a2, 0(t0)
+    sb a2, 0(t1)
     jr ra
 
 /* Writes a null-terminated string to the UART
@@ -90,7 +86,5 @@ _write_uart:
     j _write_uart
 
 .section .data
-
-hello: .ascii "Hello, World!\n"
 
 .section .bss
