@@ -50,6 +50,12 @@ _start:
   la a2, rvos
   jal _write_uart
 
+  li a2, 0x0A
+  jal _write_uart_character
+
+  la a2, boot_message
+  jal _write_uart
+
 _spin:
   j _spin
 
@@ -90,6 +96,8 @@ _write_uart:
 
 .section .data
 
-rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n"
+rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\x00"
+
+boot_message: .ascii "Beginning boot sequence...\n\x00"
 
 .section .bss
