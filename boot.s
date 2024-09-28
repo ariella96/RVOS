@@ -47,6 +47,9 @@ _start:
                  also disable DLAB */
   sb t1, 0(t0)
 
+  la a2, rvos
+  jal _write_uart
+
 _spin:
   j _spin
 
@@ -86,5 +89,7 @@ _write_uart:
     j _write_uart
 
 .section .data
+
+rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n"
 
 .section .bss
