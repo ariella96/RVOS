@@ -23,5 +23,5 @@ Build using make:
 Run using QEMU:
 
 ```sh
-  qemu-system-riscv64 -machine virt -cpu rv64i,sv39=off -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
+  qemu-system-riscv64 -machine virt -cpu rv64i,sv39=off,zicsr=on -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
 ```
