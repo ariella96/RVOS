@@ -20,8 +20,10 @@ Build using make:
 
 ## Running
 
-Run using QEMU:
+Requires QEMU's RISC-V System emulator.
+
+Run using make:
 
 ```sh
-  qemu-system-riscv64 -machine virt -cpu rv64i,sv39=off,zicsr=on -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
+  make run
 ```

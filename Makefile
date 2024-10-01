@@ -14,6 +14,10 @@ kernel.elf : kernel.o
 kernel.o : boot.s
 	$(AS) $(ASFLAGS) $< -o $@
 
+.PHONY : run
+run :
+	qemu-system-riscv64 -machine virt -cpu rv64i,sv39=off,zicsr=on -m 128M -nographic -serial mon:stdio -bios none -kernel kernel.elf
+
 .PHONY : clean
 clean :
 	rm kernel.elf kernel.o
