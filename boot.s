@@ -47,20 +47,20 @@ _start:
                  also disable DLAB */
   sb t1, 0(t0)
 
-  la a2, rvos
+  la a0, rvos
   jal _write_uart
 
-  li a2, 0x0A
+  li a0, 0x0A
   jal _write_uart_character
 
-  la a2, boot_message
+  la a0, boot_message
   jal _write_uart
 
 _spin:
   j _spin
 
 /* Write a character to the UART
-   in: a2: character to write */ 
+   in: a0: character to write */ 
 _write_uart_character:
   li t0, UART_LSR
   li t1, UART_THR
@@ -72,26 +72,26 @@ _write_uart_character:
     beqz t3, _write_uart_character_wait_ready
 
     /* Write the character to THR */
-    sb a2, 0(t1)
+    sb a0, 0(t1)
     jr ra
 
 /* Writes a null-terminated string to the UART
-   in: a2: pointer to string */
+   in: a0: pointer to string */
 _write_uart:
-  lb t0, 0(a2)
+  lb t0, 0(a0)
   bnez t0, _write_uart_nonnull /* Write the character if it is not null */
   jr ra                        /* Otherwise, return */
 
   _write_uart_nonnull:
     mv s1, ra /* Save return address */
-    mv s2, a2 /* Save pointer */
-    mv a2, t0
+    mv s2, a0 /* Save pointer */
+    mv a0, t0
     jal _write_uart_character
     mv ra, s1 /* Restore return address */
-    mv a2, s2 /* Restore pointer */
+    mv a0, s2 /* Restore pointer */
   
     /* Increase the pointer and recurse */
-    addi a2, a2, 1
+    addi a0, a0, 1
     j _write_uart
 
 .section .data
