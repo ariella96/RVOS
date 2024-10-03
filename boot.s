@@ -1,5 +1,5 @@
 .section .text
-.global _start
+.global start
 
 UART_RBR   = 0x10000000 /* UART Receiver Buffer Register,
                            when DLAB disabled */
@@ -20,7 +20,7 @@ UART_DL_MS = 0x10000001 /* UART Divisor Latch, Most Significant Byte,
                            when DLAB enabled */
 
 
-_start:
+start:
   /* Setup UART */
 
   /* Disable all interrupts */
@@ -48,28 +48,27 @@ _start:
   sb t1, 0(t0)
 
   la a0, rvos
-  jal _write_uart
+  jal write_uart
 
   li a0, 0x0A
-  jal _write_uart_character
+  jal write_uart_character
 
   la a0, boot_message
-  jal _write_uart
+  jal write_uart
 
-_spin:
-  j _spin
+  j .
 
 /* Write a character to the UART
    in: a0: character to write */ 
-_write_uart_character:
+write_uart_character:
   li t0, UART_LSR
   li t1, UART_THR
 
-  _write_uart_character_wait_ready:
+  write_uart_character_wait_ready:
     /* Wait until the Transmitter is empty */
     lb t2, 0(t0)
     andi t3, t2, 0x40
-    beqz t3, _write_uart_character_wait_ready
+    beqz t3, write_uart_character_wait_ready
 
     /* Write the character to THR */
     sb a0, 0(t1)
@@ -77,22 +76,22 @@ _write_uart_character:
 
 /* Writes a null-terminated string to the UART
    in: a0: pointer to string */
-_write_uart:
+write_uart:
   lb t0, 0(a0)
-  bnez t0, _write_uart_nonnull /* Write the character if it is not null */
+  bnez t0, write_uart_nonnull /* Write the character if it is not null */
   jr ra                        /* Otherwise, return */
 
-  _write_uart_nonnull:
+  write_uart_nonnull:
     mv s1, ra /* Save return address */
     mv s2, a0 /* Save pointer */
     mv a0, t0
-    jal _write_uart_character
+    jal write_uart_character
     mv ra, s1 /* Restore return address */
     mv a0, s2 /* Restore pointer */
   
     /* Increase the pointer and recurse */
     addi a0, a0, 1
-    j _write_uart
+    j write_uart
 
 .section .data
 

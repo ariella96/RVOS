@@ -1,6 +1,6 @@
 OUTPUT_ARCH( "riscv" )
 
-ENTRY ( _start )
+ENTRY ( start )
 
 /* RAM starts at 0x80000000 on QEMU's RISC-V virt board */
 MEMORY {
