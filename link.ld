@@ -1,6 +1,6 @@
 OUTPUT_ARCH( "riscv" )
 
-ENTRY ( start )
+ENTRY ( _start )
 
 /* RAM starts at 0x80000000 on QEMU's RISC-V virt board */
 MEMORY {
@@ -29,4 +29,10 @@ SECTIONS {
   .bss : {
     *(.bss)
   } >ram :data
+
+  /* Stack */
+  . = ALIGN(0x80) ;
+  STACK_BOTTOM = . ;
+  . += 0x8000 ;
+  STACK_TOP = . ;
 }
