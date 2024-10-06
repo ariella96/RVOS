@@ -49,6 +49,15 @@ _start:
                  also disable DLAB */
   sb t1, 0(t0)
 
+  /* Initialize frame pointer */
+  addi sp, sp, -16
+  la t0, STACK_BOTTOM
+  blt sp, t0, panic /* If we cannot create an initial frame record,
+                       panic */
+  sd zero, 0(sp)
+  sd zero, 8(sp)
+  mv fp, sp
+
   la a0, rvos
   jal write_uart
 
@@ -79,7 +88,21 @@ write_uart:
   addi a0, a0, 1
   j write_uart
 
+/* Kernel panic
+   in: a0: Pointer to error message */
+panic:
+  mv s1, a0
+  la a0, panic_message
+  jal write_uart
+  mv a0, s1
+  jal write_uart
+  j .
+
 .section .data
+
+panic_message: .ascii "Fatal error!\n\x00"
+
+fp_init_error_message: .ascii "Failed to allocate stack space for initial frame record.\n\x00"
 
 rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\n\x00"
 
