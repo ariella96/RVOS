@@ -65,6 +65,10 @@ _start:
   sd zero, 8(sp)
   mv fp, sp
 
+  /* Clear global pointer and thread pointer */
+  mv gp, zero
+  mv tp, zero
+
   la a0, boot_success_message
   jal write_uart
 
