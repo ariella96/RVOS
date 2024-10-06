@@ -1,5 +1,6 @@
 .section .text
 .global _start
+.global write_uart
 
 UART_RBR   = 0x10000000 /* UART Receiver Buffer Register,
                            when DLAB disabled */
@@ -18,7 +19,6 @@ UART_DL_LS = 0x10000000 /* UART Divisor Latch, Least Significant Byte,
                            when DLAB enabled */
 UART_DL_MS = 0x10000001 /* UART Divisor Latch, Most Significant Byte,
                            when DLAB enabled */
-
 
 _start:
   /* Setup UART */
@@ -72,7 +72,8 @@ _start:
   la a0, boot_success_message
   jal write_uart
 
-  j .
+  /* Hand over execution to the kernel */
+  j _kernel
 
 /* Write a string to the UART
    in: a0: pointer to string to write */ 
@@ -117,5 +118,3 @@ rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\
 boot_message: .ascii "Beginning boot sequence...\n\x00"
 
 boot_success_message: .ascii "Boot sequence completed successfully!\n\x00"
-
-.section .bss
