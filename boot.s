@@ -21,8 +21,6 @@ UART_DL_MS = 0x10000001 /* UART Divisor Latch, Most Significant Byte,
 
 
 _start:
-  la sp, STACK_TOP /* Stack pointer */
-
   /* Setup UART */
 
   /* Disable all interrupts */
@@ -49,6 +47,15 @@ _start:
                  also disable DLAB */
   sb t1, 0(t0)
 
+  la a0, rvos
+  jal write_uart
+
+  /* Setup basic Application Execution Environment */
+  la a0, boot_message
+  jal write_uart
+
+  la sp, STACK_TOP /* Initialize stack pointer */
+
   /* Initialize frame pointer */
   addi sp, sp, -16
   la t0, STACK_BOTTOM
@@ -58,10 +65,7 @@ _start:
   sd zero, 8(sp)
   mv fp, sp
 
-  la a0, rvos
-  jal write_uart
-
-  la a0, boot_message
+  la a0, boot_success_message
   jal write_uart
 
   j .
@@ -107,5 +111,7 @@ fp_init_error_message: .ascii "Failed to allocate stack space for initial frame 
 rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\n\x00"
 
 boot_message: .ascii "Beginning boot sequence...\n\x00"
+
+boot_success_message: .ascii "Boot sequence completed successfully!\n\x00"
 
 .section .bss
