@@ -2,4 +2,4 @@
 .global _kernel
 
 _kernel:
-  ecall
+  j .
