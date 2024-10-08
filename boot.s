@@ -1,6 +1,7 @@
 .section .text
 .global _start
 .global write_uart
+.global panic
 
 UART_RBR   = 0x10000000 /* UART Receiver Buffer Register,
                            when DLAB disabled */
@@ -68,6 +69,10 @@ _start:
   /* Clear global pointer and thread pointer */
   mv gp, zero
   mv tp, zero
+
+  /* Set trap vector */
+  la t0, _trap
+  csrw mtvec, t0
 
   la a0, boot_success_message
   jal write_uart
