@@ -1,7 +1,7 @@
 .section .text
 .global _start
 .global write_uart
-.global panic
+.global _panic
 
 UART_RBR   = 0x10000000 /* UART Receiver Buffer Register,
                            when DLAB disabled */
@@ -60,8 +60,8 @@ _start:
   /* Initialize frame pointer */
   addi sp, sp, -16
   la t0, STACK_BOTTOM
-  blt sp, t0, panic /* If we cannot create an initial frame record,
-                       panic */
+  blt sp, t0, _panic /* If we cannot create an initial frame record,
+                        panic */
   sd zero, 0(sp)
   sd zero, 8(sp)
   mv fp, sp
@@ -104,7 +104,7 @@ write_uart:
 
 /* Kernel panic
    in: a0: Pointer to error message */
-panic:
+_panic:
   mv s1, a0
   la a0, panic_message
   jal write_uart

@@ -20,7 +20,7 @@ _trap:
 
   _trap_error:
     la a0, trap_stack_error_message
-    j panic
+    j _panic
 
 .section .data
 
