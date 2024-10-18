@@ -60,8 +60,7 @@ _start:
   /* Initialize frame pointer */
   addi sp, sp, -16
   la t0, STACK_BOTTOM
-  blt sp, t0, _panic /* If we cannot create an initial frame record,
-                        panic */
+  bltu sp, t0, _panic /* Check for stack overflow */
   sd zero, 0(sp)
   sd zero, 8(sp)
   mv fp, sp
