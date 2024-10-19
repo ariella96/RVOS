@@ -60,7 +60,7 @@ _start:
   /* Initialize frame pointer */
   addi sp, sp, -16
   la t0, STACK_BOTTOM
-  bltu sp, t0, _panic /* Check for stack overflow */
+  bltu sp, t0, _fp_init_error /* Check for stack overflow */
   sd zero, 0(sp)
   sd zero, 8(sp)
   mv fp, sp
@@ -110,6 +110,10 @@ _panic:
   mv a0, s1
   jal write_uart
   j .
+
+_fp_init_error:
+  la a0, fp_init_error_message
+  j _panic
 
 .section .data
 
