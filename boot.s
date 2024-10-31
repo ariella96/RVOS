@@ -1,17 +1,11 @@
 .global _start
 .global write_uart
-.global panic
 
-UART_RBR   = 0x10000000 # UART Receiver Buffer Register, when DLAB disabled
 UART_THR   = 0x10000000 # UART Transmitter Holding Register, when DLAB disabled
 UART_IER   = 0x10000001 # UART Interrupt Enable Register, when DLAB disabled
-UART_IIR   = 0x10000002 # UART Interrupt Identification Register
 UART_FCR   = 0x10000002 # UART FIFO Control Register
 UART_LCR   = 0x10000003 # UART Line Control Register
-UART_MCR   = 0x10000004 # UART Modem Control Register
 UART_LSR   = 0x10000005 # UART Line Status Register
-UART_MSR   = 0x10000006 # UART Modem Status Register
-UART_SR    = 0x10000007 # UART Scratch Register
 UART_DL_LS = 0x10000000 # UART Divisor Latch, LSB, when DLAB enabled
 UART_DL_MS = 0x10000001 # UART Divisor Latch, MSB, when DLAB enabled
 
@@ -50,18 +44,10 @@ _start:
   la a0, boot_message
   jal write_uart
 
-  la sp, STACK_TOP # Initialize stack pointer
+  la sp, STACK_TOP # Initialize kernel stack pointer
 
   # Initialize frame pointer
   addi sp, sp, -16
-
-  # Check for stack overflow
-  la t0, STACK_BOTTOM
-  bgtu sp, t0, _start_fp_init_success
-  la a0, fp_init_error_message
-  j panic
-
-_start_fp_init_success:
   sd zero, 0(sp)
   sd zero, 8(sp)
   mv fp, sp
@@ -70,14 +56,10 @@ _start_fp_init_success:
   mv gp, zero
   mv tp, zero
 
-  # Set trap vector
-  la t0, trap
-  csrw mtvec, t0
-
   la a0, boot_success_message
   jal write_uart
 
-  j _kernel # Hand over execution to the kernel
+  # j _kernel # Hand over execution to the kernel
 
 
 /* Write a string to the UART
@@ -103,22 +85,7 @@ write_uart_wait_ready:
   j write_uart
 
 
-/* Kernel panic
-   in: a0: Pointer to error message */
-panic:
-  mv s1, a0
-  la a0, panic_message
-  jal write_uart
-  mv a0, s1
-  jal write_uart
-  j .
-
-
 .section .data
-
-panic_message: .ascii "Fatal error!\n\x00"
-
-fp_init_error_message: .ascii "Failed to allocate stack space for initial frame record.\n\x00"
 
 rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\n\x00"
 

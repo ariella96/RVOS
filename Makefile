@@ -8,16 +8,10 @@ LD = riscv64-elf-ld
 .PHONY : all
 all : kernel.elf
 
-kernel.elf : boot.o trap.o kernel.o
-	$(LD) $(LDFLAGS) -T $(srcdir)link.ld $(srcdir)boot.o $(srcdir)trap.o $(srcdir)kernel.o -o $@
+kernel.elf : boot.o
+	$(LD) $(LDFLAGS) -T $(srcdir)link.ld $< -o $@
 
 boot.o : boot.s
-	$(AS) $(ASFLAGS) $< -o $@
-
-trap.o : trap.s
-	$(AS) $(ASFLAGS) $< -o $@
-
-kernel.o : kernel.s
 	$(AS) $(ASFLAGS) $< -o $@
 
 .PHONY : run
@@ -26,4 +20,4 @@ run :
 
 .PHONY : clean
 clean :
-	rm kernel.elf boot.o trap.o kernel.o
+	rm kernel.elf boot.o

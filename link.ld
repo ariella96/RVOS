@@ -30,9 +30,8 @@ SECTIONS {
     *(.bss)
   } >ram :data
 
-  /* Stack */
-  . = ALIGN(0x80) ;
-  STACK_BOTTOM = . ;
-  . += 0x8000 ;
+  /* Kernel stack */
+  . = ALIGN(0x10) ; /* Align to ABI-enforced boundary */
+  . += 0x1000 ;
   STACK_TOP = . ;
 }
