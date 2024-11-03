@@ -5,8 +5,8 @@ CC = riscv64-elf-gcc
 AS = riscv64-elf-as
 LD = riscv64-elf-ld
 
-CFLAGS = -mcmodel=medany -march=rv64i -mabi=lp64
-ASFLAGS = -march=rv64i -mabi=lp64
+CFLAGS = -mcmodel=medany -march=rv64izicsr -mabi=lp64
+ASFLAGS = -march=rv64izicsr -mabi=lp64
 SDIR = src
 BDIR = build
 S_SRCS = $(wildcard $(SDIR)/*.s)

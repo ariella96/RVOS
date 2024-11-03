@@ -6,7 +6,7 @@ learning RISC-V assembly and operating system design.
 
 ## Target
 
-Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of QEMU's [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html), with a single RV64I core.
+Code will target the ['virt' Generic Virtual Platform (virt)](https://www.qemu.org/docs/master/system/riscv/virt.html) board of QEMU's [RISC-V System emulator](https://www.qemu.org/docs/master/system/target-riscv.html), with a single RV64I core with Zicsr extension.
 
 ## Building
 

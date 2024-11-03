@@ -14,6 +14,10 @@ _start:
   mv gp, zero
   mv tp, zero
 
+  # Setup trap vector
+  la t0, trap
+  csrw mtvec, t0
+
   # Hand over execution to boot function
   jal boot
 
