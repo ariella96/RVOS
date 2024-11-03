@@ -1,17 +1,33 @@
 SHELL = /bin/sh
 
 # Use the RISC-V GNU Compiler Toolchain by default
+CC = riscv64-elf-gcc
 AS = riscv64-elf-as
 LD = riscv64-elf-ld
 
+CFLAGS = -mcmodel=medany -march=rv64i -mabi=lp64
+ASFLAGS = -march=rv64i -mabi=lp64
+SDIR = src
+BDIR = build
+S_SRCS = $(wildcard $(SDIR)/*.s)
+C_SRCS = $(wildcard $(SDIR)/*.c)
+OBJS = $(S_SRCS:$(SDIR)/%.s=$(BDIR)/%_s.o) $(C_SRCS:$(SDIR)/%.c=$(BDIR)/%.o)
+
 # Default to building kernel.elf
 .PHONY : all
-all : kernel.elf
+all : clean build kernel.elf
 
-kernel.elf : boot.o
-	$(LD) $(LDFLAGS) -T $(srcdir)link.ld $< -o $@
+.PHONY : build
+build:
+	mkdir build
 
-boot.o : boot.s
+kernel.elf : $(OBJS)
+	$(LD) $(LDFLAGS) -T link.ld $(OBJS) -o $@
+
+$(BDIR)/%.o : $(SDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BDIR)/%_s.o : $(SDIR)/%.s
 	$(AS) $(ASFLAGS) $< -o $@
 
 .PHONY : run
@@ -20,4 +36,5 @@ run :
 
 .PHONY : clean
 clean :
-	rm kernel.elf boot.o
+	rm -rf $(BDIR)
+	rm -f kernel.elf

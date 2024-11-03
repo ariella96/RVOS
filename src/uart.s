@@ -1,6 +1,3 @@
-.global _start
-.global write_uart
-
 UART_THR   = 0x10000000 # UART Transmitter Holding Register, when DLAB disabled
 UART_IER   = 0x10000001 # UART Interrupt Enable Register, when DLAB disabled
 UART_FCR   = 0x10000002 # UART FIFO Control Register
@@ -11,9 +8,9 @@ UART_DL_MS = 0x10000001 # UART Divisor Latch, MSB, when DLAB enabled
 
 .section .text
 
-_start:
-  # Setup UART
-
+.global setup_uart
+# Setup the UART
+setup_uart:
   # Disable all interrupts
   li t0, UART_IER
   sb zero, 0(t0)
@@ -37,31 +34,10 @@ _start:
   li t1, 0x03 # 8-bit characters, one stop bit, no parity check; disable DLAB
   sb t1, 0(t0)
 
-  la a0, rvos
-  jal write_uart
-
-  # Setup basic Application Execution Environment
-  la a0, boot_message
-  jal write_uart
-
-  la sp, STACK_TOP # Initialize kernel stack pointer
-
-  # Initialize frame pointer
-  addi sp, sp, -16
-  sd zero, 0(sp)
-  sd zero, 8(sp)
-  mv fp, sp
-
-  # Clear global pointer and thread pointer
-  mv gp, zero
-  mv tp, zero
-
-  la a0, boot_success_message
-  jal write_uart
-
-  # j _kernel # Hand over execution to the kernel
+  jr ra
 
 
+.global write_uart
 /* Write a string to the UART
    in: a0: pointer to string to write */ 
 write_uart:
@@ -83,12 +59,3 @@ write_uart_wait_ready:
   # Increase the pointer and recurse
   addi a0, a0, 1
   j write_uart
-
-
-.section .data
-
-rvos: .ascii "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\n\x00"
-
-boot_message: .ascii "Beginning boot sequence...\n\x00"
-
-boot_success_message: .ascii "Boot sequence completed successfully!\n\x00"
