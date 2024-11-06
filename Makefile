@@ -5,13 +5,14 @@ CC = riscv64-elf-gcc
 AS = riscv64-elf-as
 LD = riscv64-elf-ld
 
-CFLAGS = -mcmodel=medany -march=rv64izicsr -mabi=lp64
-ASFLAGS = -march=rv64izicsr -mabi=lp64
 SDIR = src
+IDIR = inc
 BDIR = build
 S_SRCS = $(wildcard $(SDIR)/*.s)
 C_SRCS = $(wildcard $(SDIR)/*.c)
 OBJS = $(S_SRCS:$(SDIR)/%.s=$(BDIR)/%_s.o) $(C_SRCS:$(SDIR)/%.c=$(BDIR)/%.o)
+CFLAGS = -I $(IDIR) -mcmodel=medany -march=rv64izicsr -mabi=lp64
+ASFLAGS = -march=rv64izicsr -mabi=lp64
 
 # Default to building kernel.elf
 .PHONY : all

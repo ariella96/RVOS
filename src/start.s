@@ -21,5 +21,5 @@ _start:
   # Hand over execution to boot function
   jal boot
 
-  # In case boot returns, loop indefinitely
+  # In case boot returns, halt
   j .
