@@ -36,6 +36,8 @@ trap:
   sd zero, 216(sp)
   mv fp, sp
 
+  mv a2, a7
+  mv a3, a6
   jal handle_sbi
 
   # Setup return address

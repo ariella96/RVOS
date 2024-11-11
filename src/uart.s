@@ -38,8 +38,8 @@ setup_uart:
 
 
 .global write_uart
-/* Write a string to the UART
-   in: a0: pointer to string to write */ 
+# Write a string to the UART
+# in: a0: pointer to string to write
 write_uart:
   li t0, UART_LSR
   li t1, UART_THR
