@@ -1,18 +1,47 @@
 .p2align 2 # Align trap vector to 4-byte boundary
 .global trap
 trap:
-    addi sp, sp, -16
-    sd t0, 0(sp)
-    sd t1, 8(sp)
+    addi sp, sp, -128
+    sd ra, 0(sp)
+    sd t0, 8(sp)
+    sd t1, 16(sp)
+    sd t2, 24(sp)
+    sd a0, 32(sp)
+    sd a1, 40(sp)
+    sd a2, 48(sp)
+    sd a3, 56(sp)
+    sd a4, 64(sp)
+    sd a5, 72(sp)
+    sd a6, 80(sp)
+    sd a7, 88(sp)
+    sd t3, 96(sp)
+    sd t4, 104(sp)
+    sd t5, 112(sp)
+    sd t6, 120(sp)
 
+    csrr a0, mcause
+    jal handle_exception
+
+    # Return to the instruction after the exception
     csrr t0, mepc
-    csrr t1, mcause
-    bltz t1, exit_trap # For interrupts, return to the interrupted instruction
-    addi t0, t0, 4 # For exceptions, return to the instruction after the exception
+    addi t0, t0, 4
     csrw mepc, t0
 
-exit_trap:
-    ld t0, 0(sp)
-    ld t1, 8(sp)
-    addi sp, sp, 16
+    ld ra, 0(sp)
+    ld t0, 8(sp)
+    ld t1, 16(sp)
+    ld t2, 24(sp)
+    ld a0, 32(sp)
+    ld a1, 40(sp)
+    ld a2, 48(sp)
+    ld a3, 56(sp)
+    ld a4, 64(sp)
+    ld a5, 72(sp)
+    ld a6, 80(sp)
+    ld a7, 88(sp)
+    ld t3, 96(sp)
+    ld t4, 104(sp)
+    ld t5, 112(sp)
+    ld t6, 120(sp)
+    addi sp, sp, 128
     mret

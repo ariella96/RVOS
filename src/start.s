@@ -18,6 +18,9 @@ _start:
   la t0, trap
   csrw mtvec, t0
 
+  # Disable all interrupts
+  csrw mie, zero
+
   # Hand over execution to boot function
   jal boot
 
