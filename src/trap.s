@@ -3,6 +3,7 @@
 trap:
     addi sp, sp, -16
     sd t0, 0(sp)
+    sd t1, 8(sp)
 
     csrr t0, mepc
     csrr t1, mcause
