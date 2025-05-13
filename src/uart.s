@@ -15,9 +15,9 @@ setup_uart:
   li t0, UART_IER
   sb zero, 0(t0)
 
-  # Disable the FIFOs
   li t0, UART_FCR
-  sb zero, 0(t0)
+  li t1, 0x05 # Enable the FIFOs, reset the transmitter's FIFO
+  sb t1, 0(t0)
 
   #  Set the baud rate to maximum
   li t0, UART_LCR
@@ -43,19 +43,28 @@ setup_uart:
 write_uart:
   li t0, UART_LSR
   li t1, UART_THR
+  li t4, 15
 
   lb t2, 0(a0)
-  bnez t2, write_uart_wait_ready  # If the character is not null, write it
-  jr ra                           # Otherwise, return
+  beqz t2, write_uart_end # If the first character is null, return
 
 write_uart_wait_ready:
   # Wait until the Transmitter is empty
   lb t3, 0(t0)
-  andi t3, t3, 0x40
+  andi t3, t3, 0x20
   beqz t3, write_uart_wait_ready
 
+  mv t3, zero # Character written count
+write_uart_push:
   sb t2, 0(t1) # Write the character to THR
 
-  # Increase the pointer and recurse
-  addi a0, a0, 1
-  j write_uart
+  addi a0, a0, 1 # Move pointer to next character
+  lb t2, 0(a0)
+  beqz t2, write_uart_end # If the next character is null, end
+
+  addi t3, t3, 1 # Increase character written count
+  bgt t3, t4, write_uart_wait_ready # If 16 characters have been written, wait for FIFOs to clear
+  j write_uart_push # Otherwise, write next character
+
+write_uart_end:
+  jr ra
