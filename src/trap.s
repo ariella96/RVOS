@@ -1,3 +1,5 @@
+.section .text
+
 .p2align 2 # Align trap vector to 4-byte boundary
 .global trap
 trap:
