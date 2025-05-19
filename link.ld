@@ -1,7 +1,5 @@
 OUTPUT_ARCH( "riscv" )
 
-ENTRY ( _start )
-
 /* RAM starts at 0x80000000 on QEMU's RISC-V virt board */
 MEMORY {
   ram (wxa) : ORIGIN = 0x80000000, LENGTH = 128M
@@ -17,6 +15,7 @@ PHDRS {
 SECTIONS {
   /* Contains executable instructions and read-only data */
   .text : {
+    *(.start)
     *(.text)
   } >ram :text
 
