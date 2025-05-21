@@ -29,5 +29,6 @@ struct MISA {
 };
 
 struct MISA get_misa();
+void set_misa(struct MISA misa);
 
 #endif

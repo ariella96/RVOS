@@ -10,3 +10,7 @@ struct MISA get_misa() {
   misa.extensions = (csr_misa << 38) >> 38;
   return misa;
 }
+
+void set_misa(struct MISA misa) {
+  write_misa(misa.extensions + ((unsigned long) misa.mxl << 62));
+}
