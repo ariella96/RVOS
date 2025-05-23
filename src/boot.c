@@ -1,7 +1,12 @@
 #include "uart.h"
 #include "csr.h"
 
-char* rvos = "  _______      ______   _____ \n |  __ \\ \\    / / __ \\ / ____|\n | |__) \\ \\  / / |  | | (___  \n |  _  / \\ \\/ /| |  | |\\___ \\ \n | | \\ \\  \\  / | |__| |____) |\n |_|  \\_\\  \\/   \\____/|_____/ \n\n";
+char* rvos = "  _______      ______   _____ \n"
+             " |  __ \\ \\    / / __ \\ / ____|\n"
+             " | |__) \\ \\  / / |  | | (___  \n"
+             " |  _  / \\ \\/ /| |  | |\\___ \\ \n"
+             " | | \\ \\  \\  / | |__| |____) |\n"
+             " |_|  \\_\\  \\/   \\____/|_____/ \n\n";
 
 char* base_isa = "Base ISA: rv";
 char* extensions = "Extensions: \n\"Zicsr\" Extension for Control and Status "
@@ -13,11 +18,11 @@ void boot() {
   write_uart(rvos);
 
   struct MISA misa = get_misa();
-  enum MISA_EXTENSIONS misa_extensions = misa.extensions;
+  enum EXTENSIONS misa_extensions = misa.extensions;
 
   // Base ISA information
   write_uart(base_isa);
-  if (misa.mxl == BASE_INTEGER_32) {
+  if (misa.machine_xlen == MXL_BASE_INTEGER_32) {
     write_uart("32");
   } else {
     write_uart("64");
@@ -31,15 +36,15 @@ void boot() {
   // ISA extensions information
   write_uart(extensions);
   write_uart("");
-  if (misa_extensions & INTEGER_MULTIPLY_DIVIDE_EXTENSION) {
+  if (misa_extensions & M_EXTENSION) {
     write_uart("\"M\" Extension for Integer Multiplication and Division\n");
   }
-  if (misa_extensions & ATOMIC_EXTENSION) {
+  if (misa_extensions & A_EXTENSION) {
     write_uart("\"A\" Extension for Atomic Instructions\n");
   }
-  if (misa_extensions & SINGLE_PRECISION_FLOATING_PONT_EXTENSION) {
-    if (misa_extensions & DOUBLE_PRECISION_FLOATING_POINT_EXTENSION) {
-      if (misa_extensions & QUAD_PRECISION_FLOATING_POINT_EXTENSION) {
+  if (misa_extensions & F_EXTENSION) {
+    if (misa_extensions & D_EXTENSION) {
+      if (misa_extensions & Q_EXTENSION) {
         write_uart("\"Q\" Extenstion for Quad-Precision Floating-Point\n");
       } else {
         write_uart("\"D\" Extension for Double-Precision Floating-Point\n");
@@ -48,17 +53,16 @@ void boot() {
       write_uart("\"F\" Extension for Single-Precision Floating Point\n");
     }
   }
-  if (misa_extensions & COMPRESSED_EXTENSION) {
+  if (misa_extensions & C_EXTENSION) {
     write_uart("\"C\" Extension for Compressed Instructions\n");
   }
   if (misa_extensions & B_EXTENSION) {
-    write_uart("\"B\" Extension for Bit Manipulation (Zba/Zbb/Zbs "
-               "extensions)\n");
+    write_uart("\"B\" Extension for Bit Manipulation (Zba/Zbb/Zbs extensions)\n");
   }
-  if (misa_extensions & VECTOR_EXTENSION) {
+  if (misa_extensions & V_EXTENSION) {
     write_uart("\"V\" Standard Extension for Vector Operations\n");
   }
-  if (misa_extensions & HYPERVISOR_EXTENSION) {
+  if (misa_extensions & H_EXTENSION) {
     write_uart("\"H\" Extension for Hypervisor Support\n");
   }
   if (misa_extensions & NON_STANDARD_EXTENSIONS) {
@@ -68,9 +72,9 @@ void boot() {
 
   // Privilege levels information
   write_uart(privilege_levels);
-  if (misa_extensions & SUPERVISOR_MODE_IMPLEMENTED) {
+  if (misa_extensions & S_MODE_IMPLEMENTED) {
     write_uart("Supervisor-mode\nUser-mode\n\n");
-  } else if (misa_extensions & USER_MODE_IMPLEMENTED) {
+  } else if (misa_extensions & U_MODE_IMPLEMENTED) {
     write_uart("User-mode\n\n");
   }
 
