@@ -1,7 +1,6 @@
 #include "csr.h"
 
 extern unsigned long read_misa();
-extern void write_misa(unsigned long val);
 
 struct MISA get_misa() {
   struct MISA misa;
