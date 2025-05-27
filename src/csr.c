@@ -2,6 +2,9 @@
 
 extern unsigned long read_misa();
 extern unsigned long read_mstatus();
+extern unsigned long read_mepc();
+extern void write_mepc(unsigned long value);
+extern unsigned long read_mcause();
 
 struct MISA get_misa() {
   struct MISA misa;
@@ -42,4 +45,31 @@ struct MSTATUS get_mstatus() {
   mstatus.machine_disable_trap = (csr_mstatus << 21) >> 63;
   mstatus.some_dirty = csr_mstatus >> 63;
   return mstatus;
+}
+
+unsigned long get_mepc() {
+  return read_mepc();
+}
+
+bool set_mepc(unsigned long address) {
+  if ((address & 0x1)
+      || ((get_misa().mxl == BASE_INTEGER_32) && (address & 0x2))) {
+    return false;
+  }
+  write_mepc(address);
+  return true;
+}
+
+struct MCAUSE get_mcause() {
+  struct MCAUSE mcause;
+  unsigned long csr_mcause = read_mcause();
+  unsigned long trap_type = csr_mcause >> 63;
+  unsigned long trap_cause = (csr_mcause << 1) >> 1;
+  mcause.type = trap_type;
+  if (trap_type == TRAP_EXCEPTION) {
+    mcause.cause.exception_cause = trap_cause;
+  } else {
+    mcause.cause.interrupt_cause = trap_cause;
+  }
+  return mcause;
 }

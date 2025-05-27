@@ -21,13 +21,7 @@ trap:
   sd t5, 112(sp)
   sd t6, 120(sp)
 
-  csrr a0, mcause
-  jal handle_exception
-
-  # Return to the instruction after the exception
-  csrr t0, mepc
-  addi t0, t0, 4
-  csrw mepc, t0
+  jal handle_trap
 
   ld ra, 0(sp)
   ld t0, 8(sp)

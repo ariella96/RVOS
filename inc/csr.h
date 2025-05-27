@@ -30,6 +30,7 @@ struct MISA {
   } extensions;
 };
 
+// Machine Status CSR information
 struct MSTATUS {
   bool supervisor_interrupt_enable; // Supervisor-mode interrupt enable
   bool machine_interrupt_enable; // Machine-mode interrupt enable
@@ -117,10 +118,63 @@ struct MSTATUS {
                    // extensions dirty
 };
 
+// Machine Cause CSR information
+struct MCAUSE {
+  // Type of trap to Machine-mode
+  enum TYPE {
+    TRAP_EXCEPTION = 0, // Exception
+    TRAP_INTERRUPT = 1 // Interrupt
+  } type;
+  // Cause of trap to Machine-mode
+  union CAUSE {
+    // Cause of exception
+    enum EXCEPTION_CAUSE {
+      INSTRUCTION_ADDRESS_MISALIGNED = 0, // Control-flow target address
+                                          // misaligned
+      INSTRUCTION_ACCESS_FAULT = 1, // Instruction access fault
+      ILLEGAL_INSTRUCTION = 2, // Illegal instruction
+      BREAKPOINT = 3, // Breakpoint
+      LOAD_ADDRESS_MISALIGNED = 4, // Load address misaligned
+      LOAD_ACCESS_FAULT = 5, // Load access fault
+      STORE_AMO_ADDRESS_MISALIGNED = 6, // Store/AMO address misaligned
+      STORE_AMO_ACCESS_FAULT = 7, // Store/AMO access fault
+      ENVIRONMENT_CALL_FROM_U_MODE = 8, // Environment call from User-mode
+      ENVIRONMENT_CALL_FROM_S_MODE = 9, // Environment call from Supervisor-mode
+      ENVIRONMENT_CALL_FROM_M_MODE = 11, // Environment call from Machine-mode
+      INSTRUCTION_PAGE_FAULT = 12, // Instruction page fault
+      LOAD_PAGE_FAULT = 13, // Load page fault
+      STORE_AMO_PAGE_FAULT = 15, // Store/AMO page fault
+      DOUBLE_TRAP = 16, // Double trap
+      SOFTWARE_CHECK = 18, // Software check
+      HARDWARE_ERROR = 19 // Hardware error
+    } exception_cause;
+    // Cause of interrupt
+    enum INTERRUPT_CAUSE {
+      SUPERVISOR_SOFTWARE_INTERRUPT = 1, // Supervisor-mode software interrupt
+      MACHINE_SOFTWARE_INTERRUPT = 3, // Machine-mode software interrupt
+      SUPERVISOR_TIMER_INTERRUPT = 5, // Supervisor-mode timer interrupt
+      MACHINE_TIMER_INTERRUPT = 7, // Machine-mode timer interrupt
+      SUPERVISOR_EXTERNAL_INTERRUPT = 9, // Supervisor-mode external interrupt
+      MACHINE_EXTERNAL_INTERRUPT = 11, // Machine-mode external interrupt
+      COUNTER_OVERFLOW_INTERRUPT = 13 // Counter overflow interrupt
+    } interrupt_cause;
+  } cause;
+};
+
 // Get Machine ISA CSR information
 struct MISA get_misa();
 
 // Get Machine Status CSR information
 struct MSTATUS get_mstatus();
+
+// Get Machine Exception Program Counter CSR information
+unsigned long get_mepc();
+
+// Set Machine Exception Program Counter CSR information,
+// returns false on invalid address
+bool set_mepc(unsigned long address);
+
+// Get Machine Cause CSR information
+struct MCAUSE get_mcause();
 
 #endif
