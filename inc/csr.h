@@ -120,8 +120,7 @@ struct MSTATUS {
 
 // Machine Trap Vector CSR information
 struct MTVEC {
-  unsigned long base : 62; // Base address of trap vector, with lowest two bits
-                           // zeroed
+  unsigned long base; // Base address of trap vector
   // Vector mode
   enum MODE {
     DIRECT = 0,
@@ -131,11 +130,40 @@ struct MTVEC {
 
 // Machine Trap Vector CSR write error
 enum SET_MTVEC_ERROR {
-  SET_MTVEC_SUCCESS = 0x0, // Machine Trap Vector write success
-  BASE_ADDRESS_MISALIGNED = 0x1, // Machine Trap Vector base address not
-                                 // aligned to 4-byte boundary
-  VECTOR_MODE_RESERVED = 0x2, // Machine Trap Vector mode set to reserved value
-  SET_MTVEC_OTHER_ERROR = 0x4 // Machine Trap Vector write other error
+  SET_MTVEC_SUCCESS = 0, // Machine Trap Vector write successful
+  BASE_ADDRESS_MISALIGNED = 1, // Machine Trap Vector base address misaligned
+  SET_MTVEC_OTHER_ERROR = 2 // Machine Trap Vector write other error
+};
+
+// Machine Interrupt Enable CSR information
+enum MIE {
+  SUPERVISOR_SOFTWARE_INTERRUPT_ENABLE = 0x0002, // Supervisor-mode software
+                                                 // interrupts enabled
+  MACHINE_SOFTWARE_INTERRUPT_ENABLE = 0x0008, // Machine-mode software
+                                              // interrupts enabled
+  SUPERVISOR_TIMER_INTERRUPT_ENABLE = 0x0020, // Supervisor-mode timer
+                                              // interrupts enabled
+  MACHINE_TIMER_INTERRUPT_ENABLE = 0x0080, // Machine-mode timer interrupts
+                                           // enabled
+  SUPERVISOR_EXTERNAL_INTERRUPT_ENABLE = 0x0200, // Supervisor-mode external
+                                                 // interrupts enabled
+  MACHINE_EXTERNAL_INTERRUPT_ENABLE = 0x0800,    // Machine-mode external
+                                                 // interrupts enabled
+  LOCAL_COUNTER_OVERFLOW_INTERRUPT_ENABLE = 0x2000 // Local counter overflow
+                                                   // interrupts enabled
+};
+
+// Machine Interrupt Enable CSR write error
+enum SET_MIE_ERROR {
+  SET_MIE_SUCCESS = 0x00, // Machine Interrupt Enable write success
+  S_MODE_NOT_IMPLEMENTED = 0x01, // Supervisor-mode not implemented
+  SSIE_READ_ONLY = 0x02, // Supervisor-mode software interrupt enable read-only
+  MSIE_READ_ONLY = 0x04, // Machine-mode software interrupt enable read-only
+  STIE_READ_ONLY = 0x08, // Supervisor-mode timer interrupt enable read-only
+  MTIE_READ_ONLY = 0x10, // Machine-mode timer interrupt enable read-only
+  SEIE_READ_ONLY = 0x20, // Supervisor-mode external interrupt enable read-only
+  MEIE_READ_ONLY = 0x40, // Machine-mode external interrupt enable read-only
+  LCOFIE_READ_ONLY = 0x80 // Local counter overflow interrupt enable read-only
 };
 
 // Machine Cause CSR information
@@ -192,6 +220,10 @@ struct MTVEC get_mtvec();
 
 // Set Machine Trap Vector CSR information
 enum SET_MTVEC_ERROR set_mtvec(struct MTVEC mtvec);
+
+enum MIE get_mie();
+
+enum SET_MIE_ERROR set_mie(enum MIE mie);
 
 // Get Machine Exception Program Counter CSR information
 unsigned long get_mepc();

@@ -4,6 +4,8 @@ extern unsigned long read_misa();
 extern unsigned long read_mstatus();
 extern unsigned long read_mtvec();
 extern void write_mtvec(unsigned long value);
+unsigned long read_mie();
+void write_mie(unsigned long value);
 extern unsigned long read_mepc();
 extern void write_mepc(unsigned long value);
 extern unsigned long read_mcause();
@@ -58,24 +60,61 @@ struct MTVEC get_mtvec() {
 }
 
 enum SET_MTVEC_ERROR set_mtvec(struct MTVEC mtvec) {
-  enum SET_MTVEC_ERROR err = SET_MTVEC_SUCCESS;
   unsigned long base = mtvec.base;
+  if ((base % 4) != 0) {
+    return BASE_ADDRESS_MISALIGNED;
+  }
   unsigned long mode = mtvec.mode;
-  if (base % 0x4 != 0) {
-    err |= BASE_ADDRESS_MISALIGNED;
-  }
-  if (mode >= 2) {
-    err |= VECTOR_MODE_RESERVED;
-  }
-  if (err != SET_MTVEC_SUCCESS) {
-    return err;
-  }
-  write_mtvec((base << 2) + mode);
+
+  write_mtvec(((base >> 2) << 2) + mode);
+
   struct MTVEC new_mtvec = get_mtvec();
   unsigned long new_base = new_mtvec.base;
   enum MODE new_mode = new_mtvec.mode;
   if ((new_base != base) || (new_mode != mode)) {
-    err |= SET_MTVEC_OTHER_ERROR;
+    return false;
+  }
+  return true;
+}
+
+enum MIE get_mie() {
+  return read_mie();
+}
+
+enum SET_MIE_ERROR set_mie(enum MIE mie) {
+  if (((mie & SUPERVISOR_SOFTWARE_INTERRUPT_ENABLE)
+        || (mie & SUPERVISOR_TIMER_INTERRUPT_ENABLE)
+        || (mie & SUPERVISOR_EXTERNAL_INTERRUPT_ENABLE))
+      && !(get_misa().extensions & S_MODE_IMPLEMENTED)) {
+    return S_MODE_NOT_IMPLEMENTED;
+  }
+  
+  write_mie(mie);
+
+  enum SET_MIE_ERROR err = SET_MIE_SUCCESS;
+  enum MIE failed = get_mie() ^ mie;
+  if (failed) {
+    if (failed & SUPERVISOR_SOFTWARE_INTERRUPT_ENABLE) {
+      err |= SSIE_READ_ONLY;
+    }
+    if (failed & MACHINE_SOFTWARE_INTERRUPT_ENABLE) {
+      err |= MSIE_READ_ONLY;
+    }
+    if (failed & SUPERVISOR_TIMER_INTERRUPT_ENABLE) {
+      err |= STIE_READ_ONLY;
+    }
+    if (failed & MACHINE_TIMER_INTERRUPT_ENABLE) {
+      err |= MTIE_READ_ONLY;
+    }
+    if (failed & SUPERVISOR_EXTERNAL_INTERRUPT_ENABLE) {
+      err |= SEIE_READ_ONLY;
+    }
+    if (failed & MACHINE_EXTERNAL_INTERRUPT_ENABLE) {
+      err |= MEIE_READ_ONLY;
+    }
+    if (failed & LOCAL_COUNTER_OVERFLOW_INTERRUPT_ENABLE) {
+      err |= LCOFIE_READ_ONLY;
+    }
   }
   return err;
 }

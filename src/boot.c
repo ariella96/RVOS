@@ -21,18 +21,28 @@ void boot() {
   setup_uart();
   write_uart(rvos);
 
+  // Set trap vector
   struct MTVEC mtvec;
-  mtvec.base = ((unsigned long) trap) >> 2;
+  mtvec.base = (unsigned long) trap;
   mtvec.mode = DIRECT;
   switch (set_mtvec(mtvec)) {
     case SET_MTVEC_SUCCESS:
       break;
     case BASE_ADDRESS_MISALIGNED:
-      panic("Trap vector base misaligned.");
-    case VECTOR_MODE_RESERVED:
-      panic("Invalid trap vector mode.");
+      panic("Trap vector base address misaligned.\n");
     case SET_MTVEC_OTHER_ERROR:
-      panic("Unknown error in setting trap vector.");
+      panic("Unexpected error in setting trap vector.");
+  }
+
+  // Disable all interrupts
+  enum SET_MIE_ERROR err = set_mie(0);
+  if (err) {
+    if (err & S_MODE_NOT_IMPLEMENTED) {
+      panic("Supervisor-mode interrupt enable bits read-only as Supervisor-mode"
+            " is not implemented.\n");
+    } else {
+      panic("Some interrupt enable bits read-only.\n");
+    }
   }
 
   struct MISA misa = get_misa();

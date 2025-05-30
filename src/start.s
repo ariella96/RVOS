@@ -14,9 +14,6 @@ _start:
   mv gp, zero
   mv tp, zero
 
-  # Disable all interrupts
-  csrw mie, zero
-
   # Hand over execution to boot function
   jal boot
 
