@@ -14,10 +14,6 @@ _start:
   mv gp, zero
   mv tp, zero
 
-  # Set trap vector
-  la t0, trap
-  csrw mtvec, t0
-
   # Disable all interrupts
   csrw mie, zero
 
