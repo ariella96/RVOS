@@ -4,18 +4,18 @@
 
 extern void trap();
 
-char* rvos = "  _______      ______   _____ \n"
-             " |  __ \\ \\    / / __ \\ / ____|\n"
-             " | |__) \\ \\  / / |  | | (___  \n"
-             " |  _  / \\ \\/ /| |  | |\\___ \\ \n"
-             " | | \\ \\  \\  / | |__| |____) |\n"
-             " |_|  \\_\\  \\/   \\____/|_____/ \n\n";
+char* rvos =                      "  _______      ______   _____ \n"
+                                  " |  __ \\ \\    / / __ \\ / ____|\n"
+                                  " | |__) \\ \\  / / |  | | (___  \n"
+                                  " |  _  / \\ \\/ /| |  | |\\___ \\ \n"
+                                  " | | \\ \\  \\  / | |__| |____) |\n"
+                                  " |_|  \\_\\  \\/   \\____/|_____/ \n\n";
 
-char* base_isa_message = "Base ISA: rv";
-char* extensions_message = "Extensions: \n\"Zicsr\" Extension for Control and "
-                           "Status Register (CSR) Instructions\n";
-char* privilege_levels_message = "Privilege levels implemented:\n"
-                                 "Machine-mode\n";
+char* base_isa_message =          "Base ISA: rv";
+char* extensions_message =        "Extensions:\n\"Zicsr\" Extension for Control"
+                                  " and Status Register (CSR) Instructions\n";
+char* privilege_levels_message =  "Privilege levels implemented:\n"
+                                  "Machine-mode\n";
 
 void boot() {
   setup_uart();
