@@ -2,6 +2,8 @@
 
 extern unsigned long read_misa();
 extern unsigned long read_mstatus();
+extern unsigned long read_mtvec();
+extern void write_mtvec(unsigned long value);
 extern unsigned long read_mepc();
 extern void write_mepc(unsigned long value);
 extern unsigned long read_mcause();
@@ -45,6 +47,37 @@ struct MSTATUS get_mstatus() {
   mstatus.machine_disable_trap = (csr_mstatus << 21) >> 63;
   mstatus.some_dirty = csr_mstatus >> 63;
   return mstatus;
+}
+
+struct MTVEC get_mtvec() {
+  struct MTVEC mtvec;
+  unsigned long csr_mtvec = read_mtvec();
+  mtvec.base = csr_mtvec >> 2;
+  mtvec.mode = (csr_mtvec << 62) >> 62;
+  return mtvec;
+}
+
+enum SET_MTVEC_ERROR set_mtvec(struct MTVEC mtvec) {
+  enum SET_MTVEC_ERROR err = SET_MTVEC_SUCCESS;
+  unsigned long base = mtvec.base;
+  unsigned long mode = mtvec.mode;
+  if (base % 0x4 != 0) {
+    err |= BASE_ADDRESS_MISALIGNED;
+  }
+  if (mode >= 2) {
+    err |= VECTOR_MODE_RESERVED;
+  }
+  if (err != SET_MTVEC_SUCCESS) {
+    return err;
+  }
+  write_mtvec((base << 2) + mode);
+  struct MTVEC new_mtvec = get_mtvec();
+  unsigned long new_base = new_mtvec.base;
+  enum MODE new_mode = new_mtvec.mode;
+  if ((new_base != base) || (new_mode != mode)) {
+    err |= SET_MTVEC_OTHER_ERROR;
+  }
+  return err;
 }
 
 unsigned long get_mepc() {

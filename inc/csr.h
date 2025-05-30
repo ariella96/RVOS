@@ -118,6 +118,26 @@ struct MSTATUS {
                    // extensions dirty
 };
 
+// Machine Trap Vector CSR information
+struct MTVEC {
+  unsigned long base : 62; // Base address of trap vector, with lowest two bits
+                           // zeroed
+  // Vector mode
+  enum MODE {
+    DIRECT = 0,
+    VECTORED = 1
+  } mode;
+};
+
+// Machine Trap Vector CSR write error
+enum SET_MTVEC_ERROR {
+  SET_MTVEC_SUCCESS = 0x0, // Machine Trap Vector write success
+  BASE_ADDRESS_MISALIGNED = 0x1, // Machine Trap Vector base address not
+                                 // aligned to 4-byte boundary
+  VECTOR_MODE_RESERVED = 0x2, // Machine Trap Vector mode set to reserved value
+  SET_MTVEC_OTHER_ERROR = 0x4 // Machine Trap Vector write other error
+};
+
 // Machine Cause CSR information
 struct MCAUSE {
   // Type of trap to Machine-mode
@@ -166,6 +186,12 @@ struct MISA get_misa();
 
 // Get Machine Status CSR information
 struct MSTATUS get_mstatus();
+
+// Get Machine Trap Vector CSR information
+struct MTVEC get_mtvec();
+
+// Set Machine Trap Vector CSR information
+enum SET_MTVEC_ERROR set_mtvec(struct MTVEC mtvec);
 
 // Get Machine Exception Program Counter CSR information
 unsigned long get_mepc();

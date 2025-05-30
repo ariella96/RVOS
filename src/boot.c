@@ -1,5 +1,8 @@
-#include "uart.h"
 #include "csr.h"
+#include "panic.h"
+#include "uart.h"
+
+extern void trap();
 
 char* rvos = "  _______      ______   _____ \n"
              " |  __ \\ \\    / / __ \\ / ____|\n"
@@ -17,6 +20,20 @@ char* privilege_levels_message = "Privilege levels implemented:\n"
 void boot() {
   setup_uart();
   write_uart(rvos);
+
+  struct MTVEC mtvec;
+  mtvec.base = ((unsigned long) trap) >> 2;
+  mtvec.mode = DIRECT;
+  switch (set_mtvec(mtvec)) {
+    case SET_MTVEC_SUCCESS:
+      break;
+    case BASE_ADDRESS_MISALIGNED:
+      panic("Trap vector base misaligned.");
+    case VECTOR_MODE_RESERVED:
+      panic("Invalid trap vector mode.");
+    case SET_MTVEC_OTHER_ERROR:
+      panic("Unknown error in setting trap vector.");
+  }
 
   struct MISA misa = get_misa();
   enum EXTENSIONS extensions = misa.extensions;
