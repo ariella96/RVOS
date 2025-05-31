@@ -1,25 +1,18 @@
+#include <assert.h>
 #include "csr.h"
 #include "panic.h"
 #include "uart.h"
 
 extern void trap();
 
-char* rvos =                      "  _______      ______   _____ \n"
-                                  " |  __ \\ \\    / / __ \\ / ____|\n"
-                                  " | |__) \\ \\  / / |  | | (___  \n"
-                                  " |  _  / \\ \\/ /| |  | |\\___ \\ \n"
-                                  " | | \\ \\  \\  / | |__| |____) |\n"
-                                  " |_|  \\_\\  \\/   \\____/|_____/ \n\n";
-
-char* base_isa_message =          "Base ISA: rv";
-char* extensions_message =        "Extensions:\n\"Zicsr\" Extension for Control"
-                                  " and Status Register (CSR) Instructions\n";
-char* privilege_levels_message =  "Privilege levels implemented:\n"
-                                  "Machine-mode\n";
-
 void boot() {
   setup_uart();
-  write_uart(rvos);
+  write_uart("  _______      ______   _____ \n"
+             " |  __ \\ \\    / / __ \\ / ____|\n"
+             " | |__) \\ \\  / / |  | | (___  \n"
+             " |  _  / \\ \\/ /| |  | |\\___ \\ \n"
+             " | | \\ \\  \\  / | |__| |____) |\n"
+             " |_|  \\_\\  \\/   \\____/|_____/ \n\n");
 
   // Set trap vector
   struct MTVEC mtvec;
@@ -49,7 +42,7 @@ void boot() {
   enum EXTENSIONS extensions = misa.extensions;
 
   // Base ISA information
-  write_uart(base_isa_message);
+  write_uart("Base ISA: rv");
   if (misa.mxl == BASE_INTEGER_32) {
     write_uart("32");
   } else {
@@ -62,7 +55,8 @@ void boot() {
   }
 
   // ISA extensions information
-  write_uart(extensions_message);
+  write_uart("Extensions:\n\"Zicsr\" Extension for Control and Status Register "
+             "(CSR) Instructions\n");
   if (extensions & M_EXTENSION) {
     write_uart("\"M\" Extension for Integer Multiplication and Division\n");
   }
@@ -99,7 +93,7 @@ void boot() {
   write_uart("\n");
 
   // Privilege levels information
-  write_uart(privilege_levels_message);
+  write_uart("Privilege levels implemented:\nMachine-mode\n");
   if (extensions & S_MODE_IMPLEMENTED) {
     write_uart("Supervisor-mode\nUser-mode\n");
   } else if (extensions & U_MODE_IMPLEMENTED) {

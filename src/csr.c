@@ -60,18 +60,14 @@ struct MTVEC get_mtvec() {
 }
 
 enum SET_MTVEC_ERROR set_mtvec(struct MTVEC mtvec) {
-  unsigned long base = mtvec.base;
-  if ((base % 4) != 0) {
+  if ((mtvec.base % 4) != 0) {
     return BASE_ADDRESS_MISALIGNED;
   }
-  unsigned long mode = mtvec.mode;
 
-  write_mtvec(((base >> 2) << 2) + mode);
+  write_mtvec(((mtvec.base >> 2) << 2) + mtvec.mode);
 
   struct MTVEC new_mtvec = get_mtvec();
-  unsigned long new_base = new_mtvec.base;
-  enum MODE new_mode = new_mtvec.mode;
-  if ((new_base != base) || (new_mode != mode)) {
+  if ((new_mtvec.base != mtvec.base) || (new_mtvec.mode != mtvec.mode)) {
     return false;
   }
   return true;
@@ -135,13 +131,11 @@ bool set_mepc(unsigned long address) {
 struct MCAUSE get_mcause() {
   struct MCAUSE mcause;
   unsigned long csr_mcause = read_mcause();
-  unsigned long trap_type = csr_mcause >> 63;
-  unsigned long trap_cause = (csr_mcause << 1) >> 1;
-  mcause.type = trap_type;
-  if (trap_type == TRAP_EXCEPTION) {
-    mcause.cause.exception_cause = trap_cause;
+  mcause.type = csr_mcause >> 63;
+  if (mcause.type == TRAP_EXCEPTION) {
+    mcause.cause.exception_cause = (csr_mcause << 1) >> 1;
   } else {
-    mcause.cause.interrupt_cause = trap_cause;
+    mcause.cause.interrupt_cause = (csr_mcause << 1) >> 1;
   }
   return mcause;
 }
