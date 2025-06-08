@@ -14,6 +14,13 @@ write_mstatus:
   csrw mstatus, a0
   jr ra
 
+.global write_mtvec
+# Write to the Machine Trap Vector CSR
+# in: a0: Value to write to Machine Trap Vector
+write_mtvec:
+  csrw mtvec, a0
+  jr ra
+
 .global write_mepc
 # Write to the Machine Exception Program Counter CSR
 # in: a0: Value to write to Machine Exception Program Counter
