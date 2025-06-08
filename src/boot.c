@@ -22,10 +22,7 @@ void boot() {
   write_uart(" Done.\n");
   
   write_uart("Setting Machine Previous Privilege Mode to S-mode...");
-  unsigned long mstatus = read_mstatus();
-  mstatus &= ~(0x1800);
-  mstatus |= (0x800);
-  write_mstatus(mstatus);
+  write_mstatus((read_mstatus() & (~(0x1800))) | (0x0800));
   write_uart(" Done.\n");
 
   write_uart("Executing kernel...\n");
