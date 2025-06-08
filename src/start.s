@@ -13,6 +13,10 @@ _start:
   mv gp, zero
   mv tp, zero
 
+  # Set mepc to kernel entry
+  la t0, kernel_entry
+  csrw mepc, t0
+
   # Hand over execution to boot function
   jal boot
 
