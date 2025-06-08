@@ -14,6 +14,13 @@ write_mstatus:
   csrw mstatus, a0
   jr ra
 
+.global write_mepc
+# Write to the Machine Exception Program Counter CSR
+# in: a0: Value to write to Machine Exception Program Counter
+write_mepc:
+  csrw mepc, a0
+  jr ra
+
 .global _mret
 # Machine-mode trap-return
 _mret:
