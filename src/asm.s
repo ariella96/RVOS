@@ -42,6 +42,13 @@ write_mtvec:
   csrw mtvec, a0
   jr ra
 
+.global read_mie
+# Read from the Machine Interrupt Enable CSR
+# out: a0: Machine Interrupt Enable value
+read_mie:
+  csrr a0, mie
+  jr ra
+
 .global write_mie
 # Write to the Machine Interrupt Enable CSR
 # in: a0: Value to write to Machine Interrupt Enable
@@ -49,11 +56,25 @@ write_mie:
   csrw mie, a0
   jr ra
 
+.global read_mip
+# Read from the Machine Interrupt Pending CSR
+# out: a0: Machine Interrupt Pending value
+read_mip:
+  csrr a0, mip
+  jr ra
+
 .global write_mip
 # Write to the Machine Interrupt Pending CSR
 # in: a0: Value to write to Machine Interrupt Pending
 write_mip:
   csrw mip, a0
+  jr ra
+
+.global read_mepc
+# Read from the Machine Exception Program Counter CSR
+# out: a0: Machine Exception Program Counter value
+read_mepc:
+  csrr a0, mepc
   jr ra
 
 .global write_mepc
@@ -74,3 +95,29 @@ read_mcause:
 # Machine-mode trap-return
 _mret:
   mret
+
+.global call_sbi
+# Call an SBI function
+# in: a0: Extension ID
+# in: a1: Function ID
+# in: a2: Argument to SBI function
+# out: a0: Error code
+# out: a1: Value from SBI function
+call_sbi:
+  mv a7, a0
+  mv a6, a1
+  ecall
+
+.global write_stvec
+# Write to the Supervisor Trap Vector CSR
+# in: a0: Value to write to Supervisor Trap Vector
+write_stvec:
+  csrw stvec, a0
+  jr ra
+
+.global read_scause
+# Read from the Supervisor Cause CSR
+# out: a0: Supervisor Cause value
+read_scause:
+  csrr a0, scause
+  jr ra

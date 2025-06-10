@@ -1,14 +1,9 @@
+#include "asm.h"
 #include "kernel.h"
-#include "time.h"
 #include "uart.h"
 
-extern unsigned long read_mstatus();
-extern void write_mstatus(unsigned long val);
-extern void write_mtvec(unsigned long val);
-extern void write_mie(unsigned long val);
-extern void write_mepc(unsigned long val);
-extern void _mret();
 extern void mtrap();
+extern void strap();
 
 void boot() {
   setup_uart();
@@ -21,13 +16,9 @@ void boot() {
   
   write_uart("Beginning boot sequence...\n");
 
-  write_uart("Enabling Timer Interrupts...");
-  write_mie(0xA0);
-  write_mtimecmp(0xFFFFFFFFFFFFFFFF);
-  write_uart(" Done.\n");
-
-  write_uart("Setting Machine Trap Vector...");
+  write_uart("Setting Trap Vectors...");
   write_mtvec((unsigned long) mtrap);
+  write_stvec((unsigned long) strap);
   write_uart(" Done.\n");
 
   write_uart("Setting Machine Exception Program Counter to kernel entry...");
