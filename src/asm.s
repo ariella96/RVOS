@@ -42,11 +42,32 @@ write_mtvec:
   csrw mtvec, a0
   jr ra
 
+.global write_mie
+# Write to the Machine Interrupt Enable CSR
+# in: a0: Value to write to Machine Interrupt Enable
+write_mie:
+  csrw mie, a0
+  jr ra
+
+.global write_mip
+# Write to the Machine Interrupt Pending CSR
+# in: a0: Value to write to Machine Interrupt Pending
+write_mip:
+  csrw mip, a0
+  jr ra
+
 .global write_mepc
 # Write to the Machine Exception Program Counter CSR
 # in: a0: Value to write to Machine Exception Program Counter
 write_mepc:
   csrw mepc, a0
+  jr ra
+
+.global read_mcause
+# Read from the Machine Cause CSR
+# out: a0: Machine Cause value
+read_mcause:
+  csrr a0, mcause
   jr ra
 
 .global _mret

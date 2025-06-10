@@ -1,8 +1,15 @@
+#include "time.h"
+
 extern unsigned long read_mvendorid();
 extern unsigned long read_marchid();
-extern unsigned long read_mipmid();
+extern unsigned long read_mimpid();
+extern unsigned long read_mcause();
 
 void handle_non_sbi() {
+  if (read_mcause() == 0x8000000000000007) { // Machine Timer interrupt
+    write_mtimecmp(0xFFFFFFFFFFFFFFFF);
+  }
+
   return;
 }
 
@@ -65,7 +72,7 @@ struct sbiret sbi_get_marchid() {
 
 struct sbiret sbi_get_mimpid() {
   struct sbiret ret;
-  ret.value = read_mipmid();
+  ret.value = read_mimpid();
   ret.error = 0;
 
   return ret;
