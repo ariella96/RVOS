@@ -1,24 +1,12 @@
 #include "uart.h"
 
-#define UART_THR_ADDR   0x10000000; // UART Transmitter Holding Register,
-                                    // when DLAB disabled
-#define UART_IER_ADDR   0x10000001; // UART Interrupt Enable Register,
-                                    // when DLAB disabled
-#define UART_FCR_ADDR   0x10000002; // UART FIFO Control Register
-#define UART_LCR_ADDR   0x10000003; // UART Line Control Register
-#define UART_LSR_ADDR   0x10000005; // UART Line Status Register
-#define UART_DL_LS_ADDR 0x10000000; // UART Divisor Latch, LSB,
-                                    // when DLAB enabled
-#define UART_DL_MS_ADDR 0x10000001; // UART Divisor Latch, MSB,
-                                    // when DLAB enabled
-
-volatile unsigned char* UART_THR   = (volatile unsigned char*) UART_THR_ADDR;
-volatile unsigned char* UART_IER   = (volatile unsigned char*) UART_IER_ADDR;
-volatile unsigned char* UART_FCR   = (volatile unsigned char*) UART_FCR_ADDR;
-volatile unsigned char* UART_LCR   = (volatile unsigned char*) UART_LCR_ADDR;
-volatile unsigned char* UART_LSR   = (volatile unsigned char*) UART_LSR_ADDR;
-volatile unsigned char* UART_DL_LS = (volatile unsigned char*) UART_DL_LS_ADDR;
-volatile unsigned char* UART_DL_MS = (volatile unsigned char*) UART_DL_MS_ADDR;
+volatile unsigned char* UART_THR   = (volatile unsigned char*) 0x10000000;
+volatile unsigned char* UART_IER   = (volatile unsigned char*) 0x10000001;
+volatile unsigned char* UART_FCR   = (volatile unsigned char*) 0x10000002;
+volatile unsigned char* UART_LCR   = (volatile unsigned char*) 0x10000003;
+volatile unsigned char* UART_LSR   = (volatile unsigned char*) 0x10000005;
+volatile unsigned char* UART_DL_LS = (volatile unsigned char*) 0x10000000;
+volatile unsigned char* UART_DL_MS = (volatile unsigned char*) 0x10000001;
 
 void setup_uart() {
   *UART_IER = 0x00; // Disable all interrupts
