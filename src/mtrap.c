@@ -1,6 +1,4 @@
-extern unsigned long read_mvendorid();
-extern unsigned long read_marchid();
-extern unsigned long read_mimpid();
+#include "asm.h"
 
 void handle_non_sbi() {
   return;

@@ -1,12 +1,6 @@
+#include "asm.h"
 #include "kernel.h"
 #include "uart.h"
-
-extern unsigned long read_mstatus();
-extern void write_mstatus(unsigned long val);
-extern void write_mtvec(unsigned long val);
-extern void write_mepc(unsigned long val);
-extern void _mret();
-extern void mtrap();
 
 void boot() {
   setup_uart();
