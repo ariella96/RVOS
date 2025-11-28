@@ -47,5 +47,5 @@ void write_uart(char* string) {
 		}
 	}
 
-	return write_uart(++string);
+	return write_uart(string);
 }
