@@ -7,11 +7,17 @@ extern unsigned long read_mstatus();
 // Write `value` to the Machine Status CSR
 extern void write_mstatus(unsigned long value);
 
+// Write `value` to the Machine Trap Vector CSR
+extern void write_mtvec(unsigned long value);
+
 // Write `value` to the Machine Exception Program Counter CSR
 extern void write_mepc(unsigned long value);
 
 // Machine-mode trap return
 extern void _mret();
+
+// Machine-mode trap handler
+extern void mtrap();
 
 // Read from the Supervisor Status CSR
 extern unsigned long read_sstatus();
@@ -21,5 +27,8 @@ extern void write_sstatus(unsigned long value);
 
 // Write `value` to the Supervisor Exception Program Counter CSR
 extern void write_sepc(unsigned long value);
+
+// Supervisor-mode trap return
+extern void _sret();
 
 #endif

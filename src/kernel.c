@@ -15,7 +15,7 @@ void kernel_entry() {
   write_uart(" Done.\n");
 
   write_uart("Executing user entry...\n");
-  _mret();
+  _sret();
 
 	return;
 }

@@ -2,7 +2,7 @@
 #include "user.h"
 
 void user_entry() {
-	write_uart("User entry reached.");
+	write_uart("User entry reached.\n");
 
 	return;
 }

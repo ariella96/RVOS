@@ -14,6 +14,10 @@ void boot() {
 	
 	write_uart("Beginning boot sequence...\n");
 
+	write_uart("Setting Machine Trap Vector...");
+  write_mtvec((unsigned long) mtrap);
+  write_uart(" Done.\n");
+
   write_uart("Setting Machine Exception Program Counter to kernel entry...");
   write_mepc((unsigned long) kernel_entry);
   write_uart(" Done.\n");

@@ -10,6 +10,11 @@ write_mstatus:
   csrw mstatus, a0
   jr ra
 
+.global write_mtvec
+write_mtvec:
+  csrw mtvec, a0
+  jr ra
+
 .global write_mepc
 write_mepc:
   csrw mepc, a0
@@ -33,3 +38,7 @@ write_sstatus:
 write_sepc:
 	csrw sepc, a0
 	jr ra
+
+.global _sret
+_sret:
+  sret
