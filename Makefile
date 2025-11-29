@@ -11,7 +11,7 @@ BDIR = build
 S_SRCS = $(wildcard $(SDIR)/*.s)
 C_SRCS = $(wildcard $(SDIR)/*.c)
 OBJS = $(S_SRCS:$(SDIR)/%.s=$(BDIR)/%_s.o) $(C_SRCS:$(SDIR)/%.c=$(BDIR)/%.o)
-CFLAGS = -I $(IDIR) -mcmodel=medany -march=rv64izicsr -mabi=lp64
+CFLAGS = -I $(IDIR) -mcmodel=medany -march=rv64izicsr -mabi=lp64 -Werror
 ASFLAGS = -march=rv64izicsr -mabi=lp64
 
 # Default to building kernel.elf
