@@ -13,8 +13,8 @@ struct sbiargs {
 
 // SBI function specification
 struct sbifunc {
-	unsigned long fid; // SBI function ID
-	unsigned long eid; // SBI extension ID
+	long fid; // SBI function ID
+	long eid; // SBI extension ID
 };
 
 // Return value for SBI calls

@@ -1,5 +1,20 @@
 .section .text
 
+.global read_mvendorid
+read_mvendorid:
+  csrr a0, mvendorid
+  jr ra
+
+.global read_marchid
+read_marchid:
+  csrr a0, marchid
+  jr ra
+
+.global read_mimpid
+read_mimpid:
+  csrr a0, mimpid
+  jr ra
+
 .global read_mstatus
 read_mstatus:
   csrr a0, mstatus
@@ -13,6 +28,11 @@ write_mstatus:
 .global write_mtvec
 write_mtvec:
   csrw mtvec, a0
+  jr ra
+
+.global read_mepc
+read_mepc:
+  csrr a0, mepc
   jr ra
 
 .global write_mepc
