@@ -26,7 +26,7 @@ void boot() {
   write_mstatus((read_mstatus() & (~(0x1800))) | (0x0800));
   write_uart(" Done.\n");
 
-  write_uart("Executing kernel entry...\n");
+  write_uart("Executing kernel entry... ");
   _mret();
 
 	return;

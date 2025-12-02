@@ -23,7 +23,7 @@ struct sbiret sbi_get_impl_id() {
 struct sbiret sbi_get_impl_version() {
 	struct sbiret ret;
 	ret.error = 0;
-	ret.uvalue = 0;
+	ret.uvalue = 1;
 
 	return ret;
 }
